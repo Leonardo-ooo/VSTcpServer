@@ -17,8 +17,8 @@
 #include <stdarg.h>
 #include <fcntl.h>
 
-#define LISTEN_LOG 5
-#define BUFFER_SIZE 5242880
+constexpr auto LISTEN_LOG = 5;
+constexpr auto BUFFER_SIZE = 5242880;
 class TcpServer
 {
 public:

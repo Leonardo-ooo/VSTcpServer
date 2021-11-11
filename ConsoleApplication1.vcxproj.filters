@@ -16,4 +16,10 @@
       <Filter>heads</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DBC.cpp" />
+    <ClCompile Include="rdata.cpp" />
+    <ClCompile Include="server.cpp" />
+    <ClCompile Include="TcpServer.cpp" />
+  </ItemGroup>
 </Project>

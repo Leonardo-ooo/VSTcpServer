@@ -4,13 +4,13 @@
 #include <iostream>
 #include <cstring>
 
-#define BEATS           0
-#define LOGIN_CHECK     1
-#define ACT_CONTENT     2
-#define LOGIN_SEND      3
-#define ULOG_SEND       4
-#define RLOG_SEND       5
-#define MESSAGE_SEND    6
+constexpr auto BEATS = 0;
+constexpr auto LOGIN_CHECK = 1;
+constexpr auto ACT_CONTENT = 2;
+constexpr auto LOGIN_SEND = 3;
+constexpr auto ULOG_SEND = 4;
+constexpr auto RLOG_SEND = 5;
+constexpr auto MESSAGE_SEND = 6;
 
 class Rdata
 {

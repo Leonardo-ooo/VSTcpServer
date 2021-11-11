@@ -8,24 +8,24 @@
 #include <signal.h>
 #include <vector>
 #include <sys/stat.h>
-#include <map>
+#include <unordered_map>
 
 #include "TcpServer.h"
 #include "DBC.h"
 #include "rdata.h"
 
-#define SOCK_SIZE   1024
-#define LOG_SIZE    2
+constexpr auto SOCK_SIZE = 1024;
+constexpr auto LOG_SIZE = 2;
 
-#define LOGIN       1
-#define MESSAGE     2
-#define GETICON     3
-#define RMESSAGE    4
-#define GMESSAGE    5
+constexpr auto LOGIN = 1;
+constexpr auto MESSAGE = 2;
+constexpr auto GETICON = 3;
+constexpr auto RMESSAGE = 4;
+constexpr auto GMESSAGE = 5;
 
 using namespace std;
 
-map<string, int>getact = {
+unordered_map<string, int>getact = {
 {"login", LOGIN },
 {"message", MESSAGE},
 {"geticon", GETICON},
@@ -37,8 +37,8 @@ TcpServer server;
 DBC db;
 int epollfd;
 
-map<int, int>sockmp;        //      key: uid,  value: sock
-int sockuid[10000];         //      get the uid by sock
+unordered_map<int, int>sockmp;        //      key: uid,  value: sock
+int sockuid[SOCK_SIZE + 1];         //      get the uid by sock
 void signal_init();
 void EXIT(int);
 void login(Rdata trdata, struct epoll_event evts);
@@ -47,6 +47,7 @@ void getidlist(vector<string>& idlist, string chatroom);
 void xmlWrite(int sock, Rdata& xmlf, int op);
 void sendmessage(Rdata& trdata, int sender);
 void sendrmessage(Rdata& trdata, int sender);
+void sendgmessage(Rdata& trdata, int sender);
 
 struct epoll_event& event(int fd, __uint32_t events)
 {
@@ -229,7 +230,7 @@ int main(int argc, char* argv[])
 
                 case GMESSAGE:
                     cout << "do sendgmessage()" << endl;
-                    sendgmessage();
+                    sendgmessage(trdata, sockuid[evts[i].data.fd]);
                     break;
 
                 default:
@@ -433,6 +434,20 @@ void sendrmessage(Rdata& trdata, int sender)
 
 }
 
+//      send the global message
+
+void sendgmessage(Rdata& trdata, int sender)
+{
+    DBC tdb;
+    db_init(tdb);
+    tdb.query("select uname from account where id=" + to_string(sender));
+    Rdata tt("gmessage", trdata.content);
+    tt.uname = tdb.row[0];
+    for (auto& i : sockmp) {
+        xmlWrite(i.second, tt, MESSAGE_SEND);
+    }
+
+}
 //      send message with the own protocol
 
 void xmlWrite(int sock, Rdata& xmlf, int op)
