@@ -24,7 +24,6 @@ constexpr auto RMESSAGE = 4;
 constexpr auto GMESSAGE = 5;
 
 using namespace std;
-
 unordered_map<string, int>getact = {
 {"login", LOGIN },
 {"message", MESSAGE},
@@ -68,8 +67,12 @@ void db_init(DBC& tdb)
     unsigned int dbport = 3306;
     if (tdb.Connect(host, user, pwd, dbname, dbport) == false)
     {
-        cerr << "data base connect error! " << endl;
-        exit(-1);
+        const char* pwd1 = "Zw0727@qq.cn";
+        if (tdb.Connect(host, user, pwd1, dbname, dbport) == false)
+        {
+            cerr << "data base connect error! " << endl;
+            exit(-1);
+        }
     }
 }
 
@@ -365,7 +368,7 @@ void sendmessage(Rdata& trdata, int sender)
         cout << "old log: " << log << endl;
         if (atoi(tdb.row[0]) == LOG_SIZE)
         {
-            int st = 0, tsize = log.size();
+            int st = 0, tsize = (int)log.size();
             while (log[st] != ';') st++;
             st++;
             log = log.substr(st, tsize - st);
@@ -416,7 +419,7 @@ void sendrmessage(Rdata& trdata, int sender)
     string log = tdb.row[2];
     if (atoi(tdb.row[0]) == LOG_SIZE)
     {
-        int st = 0, tsize = log.size();
+        int st = 0, tsize = (int)log.size();
         while (log[st] != ';') st++;
         st++;
         log = log.substr(st, tsize - st);
@@ -496,7 +499,7 @@ void posticon(int sock, string uid)
     memcpy(tbuffer, &statbuf.st_size, 4);
     server.Write(sock, tbuffer, 4);
     int t;
-    while (t = fread(tbuffer, 1, 65535, fd))
+    while ((t = (int)fread(tbuffer, 1, 65535, fd)) > 0)
     {
         server.Write(sock, tbuffer, t);
     }

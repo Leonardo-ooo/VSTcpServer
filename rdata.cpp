@@ -50,7 +50,7 @@ bool Rdata::stoxml(int op, char *buffer)
     }
     s += "</data>";
 	memcpy(buffer, s.c_str(), s.size() + 1);
-    len = strlen(buffer);
+    len = (int)strlen(buffer);
     return true;
 }
 
