@@ -15,7 +15,7 @@
 #include "rdata.h"
 
 constexpr auto SOCK_SIZE = 1024;
-constexpr auto LOG_SIZE = 2;
+constexpr auto LOG_SIZE = 5;
 
 constexpr auto LOGIN = 1;
 constexpr auto MESSAGE = 2;
