@@ -271,8 +271,8 @@ void login(Rdata trdata, struct epoll_event ev)
                 int& tfd = sockmp[uid];
                 cout << "have the same account online , use sock = " << tfd << endl;
                 Rdata tt("logout", "1");
-                xmlWrite(ev.data.fd, tt, ACT_CONTENT);
-                epoll_ctl(epollfd, EPOLL_CTL_DEL, tfd, &ev);
+                xmlWrite(tfd, tt, ACT_CONTENT);
+                epoll_ctl(epollfd, EPOLL_CTL_DEL, tfd, &event(tfd, EPOLLIN));
                 close(tfd);
                 sockuid[tfd] = -1;
                 tfd = ev.data.fd;

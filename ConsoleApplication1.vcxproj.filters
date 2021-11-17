@@ -6,13 +6,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DBC.h">
-      <Filter>heads</Filter>
-    </ClInclude>
     <ClInclude Include="rdata.h">
       <Filter>heads</Filter>
     </ClInclude>
     <ClInclude Include="TcpServer.h">
+      <Filter>heads</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC.h">
       <Filter>heads</Filter>
     </ClInclude>
   </ItemGroup>
