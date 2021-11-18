@@ -18,10 +18,10 @@ bool Rdata::stoxml(int op, char *buffer)
         case LOGIN_CHECK:
             s += "<content>" + content + "</content>";
             s += "<uid>" + uid + "</uid>";
+            s += "<uname>" + uname + "</uname>";
             break;
 
         case LOGIN_SEND:
-            s += "<uname>" + uname + "</uname>";
             s += "<friends>" + friends + "</friends>";
             s += "<chatroom>" + chatroom + "</chatroom>";
             break;

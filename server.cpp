@@ -280,9 +280,10 @@ void login(Rdata trdata, struct epoll_event ev)
             else sockmp[uid] = ev.data.fd;
             cout << "password correct " << endl;
             sockuid[ev.data.fd] = uid;
+            logincheck.uid = db.row[1];
+            if(db.row[2]) logincheck.uname = db.row[2];
         }
         else logincheck.content = "0";
-        if (db.row[1]) logincheck.uid = db.row[1];
         cout << "logincheck = " << logincheck.content << endl;
     }
     xmlWrite(ev.data.fd, logincheck, LOGIN_CHECK);
@@ -294,7 +295,6 @@ void login(Rdata trdata, struct epoll_event ev)
     //      send the uname, friend list, chatroom list to the user
 
     Rdata loginsend("loginsend");
-    if (db.row[2]) loginsend.uname = db.row[2];
     if (db.row[3]) loginsend.friends = db.row[3];
     if (db.row[4]) loginsend.chatroom = db.row[4];
     xmlWrite(ev.data.fd, loginsend, LOGIN_SEND);
@@ -491,22 +491,18 @@ void posticon(int sock, string uid)
     db.nextline();
     string path = db.row[1] + uid + db.row[0];
     FILE* fd = fopen(path.c_str(), "r");
-    char* tbuffer = (char*)malloc(65535);
 
     struct stat statbuf;
     stat(path.c_str(), &statbuf);
-
-    memcpy(tbuffer, &statbuf.st_size, 4);
-    server.Write(sock, tbuffer, 4);
+    htoni(statbuf.st_size, server.buffer);
+    server.Write(sock, server.buffer, 4);
     int t;
-    while ((t = (int)fread(tbuffer, 1, 65535, fd)) > 0)
+    while ((t = (int)fread(server.buffer, 1, 65535, fd)) > 0)
     {
-        server.Write(sock, tbuffer, t);
+        server.Write(sock, server.buffer, t);
     }
     fclose(fd);
-    close(sock);
-    delete tbuffer;
-
+    //close(sock);
 }
 
 void signal_init()
